@@ -32,7 +32,7 @@ class ViewController: UIViewController {
     var firstNumber: Double = 0
     var secondNumber: Double = 0
     var opration: String = ""
-    
+    var isFirstOprerator: Bool = true
     
     
     
@@ -63,13 +63,25 @@ class ViewController: UIViewController {
         opration = sender.currentTitle!
         
         if let inputOperation = Double(inputTextfield.text!) {
+            
             if isEndOperation {
                 firstNumber = inputOperation
                 isEndOperation = false
-            }else{
-                firstNumber = Double(lbResult.text!)!
+                isFirstOprerator = false
                 
-                inputTextfield.text = "\(firstNumber)"
+            }else{
+                if !isFirstOprerator {
+                    secondNumber = Double(inputTextfield.text!)!
+                    let result: Double = math(opration,num1: firstNumber, numb2: secondNumber)
+                                    lbResult.text = "\(result)"
+                    firstNumber = Double(lbResult.text!)!
+                    inputTextfield.text = "\(firstNumber)"
+                }
+                print("so 1 \(firstNumber)")
+                print("so 2 \(secondNumber)")
+          // khong phai lỗi ở dấu bằng lỗi ở phần click các dấu +/-/* để ra kết quả luôn ý
+//                firstNumber = Double(lbResult.text!)!
+//                inputTextfield.text = "\(firstNumber)"
             }
         }else{
             print("Bạn cần nhập số trước khi thực hiện tính toán")
@@ -78,41 +90,52 @@ class ViewController: UIViewController {
         
         if opration == "%" {
             equalAction(sender)
+        }else if opration == "+/-"{
+            equalAction(sender)
         }
+        
     }
     
     @IBAction func equalAction(sender: UIButton) {
         isTappingNumber = false
-        var result: Double = 0
-        
         if let realSecondNumb = Double(inputTextfield.text!) {
             secondNumber = realSecondNumb
         }
+        let result: Double = math(opration,num1: firstNumber, numb2: secondNumber)
+        lbResult.text = "\(result)"
+    
+        print("so 1 \(firstNumber)")
+        print("so 2 \(secondNumber)")
+        
+    }
+    func math(ope: String,var num1: Double,numb2: Double) -> Double{
+        var result: Double = 0
         switch opration {
         case "+":
-            result = firstNumber + secondNumber
+            result = num1 + numb2
         case "-":
-            result = firstNumber - secondNumber
+            result = num1 - numb2
         case "*":
-            result = firstNumber * secondNumber
+            result = num1 * numb2
         case "/":
-            result = firstNumber / secondNumber
+            result = num1 / numb2
         case "%":
-            result = firstNumber / 100
+            result = num1 / 100
         case "+/-":
-            if firstNumber < 0 {
-                firstNumber = fabs(firstNumber)
-                result = firstNumber
+            if num1 < 0 {
+                num1 = fabs(num1)
+                result = num1
             }else{
-                firstNumber = -1 * firstNumber
-                result = firstNumber
+                num1 = -1 * num1
+                result = num1
             }
             inputTextfield.text = "\(result)"
             
         default:
             print("error Operation")
         }
-        lbResult.text = "\(result)"
+        return result
+        
     }
     
     
@@ -137,8 +160,8 @@ class ViewController: UIViewController {
     
     func updateConstranits(){
         let scale = UIScreen.mainScreen().bounds.size.height / 667
-//        print(62/(UIScreen.mainScreen().bounds.size.height - (19*4) - 64))
-//        heightMidView = heightMidView.setMultiplier(62/(UIScreen.mainScreen().bounds.size.height - (19*4) - 64))
+        //        print(62/(UIScreen.mainScreen().bounds.size.height - (19*4) - 64))
+        //        heightMidView = heightMidView.setMultiplier(62/(UIScreen.mainScreen().bounds.size.height - (19*4) - 64))
         distanceBetweenMidView.constant = -UIScreen.mainScreen().bounds.size.height * 0.08/2
         distanceBetweenResultLabelAndMiddleView.constant = UIScreen.mainScreen().bounds.size.height > 480 ?
             distanceBetweenResultLabelAndMiddleView.constant * scale : distanceBetweenResultLabelAndMiddleView.constant * 0.1
